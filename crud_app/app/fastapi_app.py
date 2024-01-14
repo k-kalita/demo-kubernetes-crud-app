@@ -11,7 +11,7 @@ app = FastAPI()
 
 async def validate(db: Database, username: str, password: str) -> bool:
     expected_hash = await db.execute(
-        "SELECT password FROM `User` WHERE username = :username",
+        "SELECT password_hash FROM `User` WHERE username = :username",
         {"username": username})
     return sha256(password.encode()).hexdigest() == expected_hash
 
