@@ -1,0 +1,57 @@
+{% extends 'index.html' %}
+
+{% block title %}
+    Create user
+{% endblock %}
+
+{% block content %}
+    <div class="container d-flex align-items-center justify-content-center">
+        <div class="card">
+            <div class="card-header p-3">
+                <h4 class="text-center mb-0">Register new user</h4>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text"
+                               class="form-control"
+                               id="username"
+                               placeholder="your username">
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email address</label>
+                        <input type="email"
+                               class="form-control"
+                               id="email"
+                               placeholder="name@example.com">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password"
+                               class="form-control"
+                               id="password"
+                               placeholder="password">
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <label for="first-name" class="form-label">First Name</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="first-name"
+                                   placeholder="Raphael">
+                        </div>
+                        <div class="col-6">
+                            <label for="last-name" class="form-label">Last Name</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="last-name"
+                                   placeholder="Coffe">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3">Register</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

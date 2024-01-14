@@ -1,0 +1,81 @@
+{% extends 'index.html' %}
+
+{% block title %}
+    Create post
+{% endblock %}
+
+{% block content %}
+    <div class="container d-flex align-items-center justify-content-center">
+        <div class="row w-100 justify-content-center">
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-header p-3">
+                        <h4 class="text-center mb-0">Create new post</h4>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Title</label>
+                                <input type="text"
+                                       class="form-control"
+                                       id="title"
+                                       placeholder="title">
+                            </div>
+                            <div class="mb-3">
+                                <label for="content" class="form-label">Content</label>
+                                <textarea class="form-control"
+                                          id="content"
+                                          rows="5"
+                                          placeholder="content"></textarea>
+                            </div>
+                            <div class="modal fade" id="login-modal" tabindex="-1">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">Enter credentials to post</h4>
+                                            <button type="button"
+                                                    class="btn-close"
+                                                    data-bs-dismiss="modal">
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row mb-2">
+                                                <div class="col-6">
+                                                    <label for="username" class="form-label">
+                                                        Username
+                                                    </label>
+                                                    <input type="text"
+                                                           class="form-control"
+                                                           id="username"
+                                                           placeholder="your username">
+                                                </div>
+                                                <div class="col-6">
+                                                    <label for="password" class="form-label">
+                                                        Password
+                                                    </label>
+                                                    <input type="password"
+                                                           class="form-control"
+                                                           id="password"
+                                                           placeholder="password">
+                                                </div>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary mt-3">
+                                                Confirm
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button"
+                                    class="btn btn-primary mt-3"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#login-modal">
+                                Post
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
