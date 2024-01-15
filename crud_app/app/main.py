@@ -69,7 +69,7 @@ async def create_post(req: PostModel, db: Database = Depends(get_db)):
         {'title': req.title, 'content': req.content, 'author_id': author_id[0][0]}
     )
 
-    return {"status_code": 200, "message": "post created"}
+    return JSONResponse({"status_code": 200, "status": "success", "message": "Post created"})
 
 
 @app.post("/create/user")
@@ -80,4 +80,4 @@ async def create_user(req: UserModel, db: Database = Depends(get_db)):
          'password_hash': sha256(req.password.encode()).hexdigest()}
     )
 
-    return {"status_code": 200, "message": "user created"}
+    return JSONResponse({"status_code": 200, "status": "success", "message": "User created"})
