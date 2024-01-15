@@ -47,7 +47,7 @@ async def home(request: Request):
 
 @app.post("/test")
 async def test(request: Request):
-    return JSONResponse({"message": "Hello World"})
+    return JSONResponse({"status": "success", "message": "Hello World"})
 
 
 @app.get("/view/{username}")
@@ -74,8 +74,10 @@ async def create_post(req: PostModel, db: Database = Depends(get_db)):
 
 @app.post("/create/user")
 async def create_user(req: UserModel, db: Database = Depends(get_db)):
-
-    await db.execute("INSERT INTO `User`(username, password_hash) VALUES (:username, :password_hash)",
-                     {'username': req.username, 'password_hash': sha256(req.password.encode()).hexdigest()})
+    await db.execute(
+        "INSERT INTO `User`(username, password_hash) VALUES (:username, :password_hash)",
+        {'username': req.username,
+         'password_hash': sha256(req.password.encode()).hexdigest()}
+    )
 
     return {"status_code": 200, "message": "user created"}

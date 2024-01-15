@@ -13,7 +13,7 @@
                         <h4 class="text-center mb-0">Create new post</h4>
                     </div>
                     <div class="card-body">
-                        <form action="/create/post">
+                        <form action="/create/post" data-show-response-modal="true">
                             <div class="mb-3">
                                 <label for="title" class="form-label">Title</label>
                                 <input type="text"
@@ -78,4 +78,7 @@
             </div>
         </div>
     </div>
+
+    {% include 'success_modal.html' %}
+    {% include 'failure_modal.html' %}
 {% endblock %}

@@ -11,7 +11,7 @@
                 <h4 class="text-center mb-0">Register new user</h4>
             </div>
             <div class="card-body">
-                <form>
+                <form data-show-response-modal="true">
                     <div class="mb-3">
                         <label for="username" class="form-label">Username</label>
                         <input type="text"
@@ -54,4 +54,7 @@
             </div>
         </div>
     </div>
+
+    {% include 'success_modal.html' %}
+    {% include 'failure_modal.html' %}
 {% endblock %}

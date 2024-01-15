@@ -4,6 +4,13 @@ function setup() {
     }).on('submit', function (e) {
         e.preventDefault();
         handleAjaxSubmit($(this));
+    }).filter(function () {
+        return $(this).data('show-response-modal');
+    }).on('submit-success', function (e, data) {
+        console.log(data)
+        renderResponsePopup($('#success-modal'), data);
+    }).on('submit-failure', function (e, data) {
+        renderResponsePopup($('#failure-modal'), data);
     });
 }
 
@@ -13,23 +20,28 @@ function handleAjaxSubmit(form) {
         url: form.attr('action'),
         data: form.serialize(),
         success: function (data) {
-            console.log(data)
             form[0].reset();
 
             form.trigger('submit-complete', [data])
 
             if (data.status === 'success')
                 form.trigger('submit-success', [data]);
-            else {
+            else
                 form.trigger('submit-failure', [data]);
-
-                if (data.status === 'invalid')
-                    form.trigger('submit-invalid', [data])
-                else if (data.status === 'impermissible')
-                    form.trigger('submit-impermissible', [data])
-                else if (data.status === 'error')
-                    form.trigger('submit-error', [data])
+        },
+        error: function (error) {
+            const data = {
+                status: 'failure',
+                message: error.responseText
             }
+
+            form.trigger('submit-complete', [data])
+            form.trigger('submit-failure', [data]);
         }
     });
+}
+
+function renderResponsePopup(popup, data) {
+    popup.find('.modal-body .modal-message').text(data.message);
+    popup.modal('show');
 }
