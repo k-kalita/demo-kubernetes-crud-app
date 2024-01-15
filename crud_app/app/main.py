@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from fastapi import FastAPI, Depends, Request
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import JSONResponse
 from fastapi.templating import Jinja2Templates
 from starlette.staticfiles import StaticFiles
 from databases import Database
@@ -55,7 +55,7 @@ async def view(username: int):
     ...
 
 
-@app.post("/create/post", response_model=PostModel, response_class=HTMLResponse)
+@app.post("/create/post")
 async def create_post(req: PostModel, db: Database = Depends(get_db)):
     if not await validate(db, req.username, req.password):
         return {"error": "wrong password", "status_code": 403}
@@ -72,10 +72,10 @@ async def create_post(req: PostModel, db: Database = Depends(get_db)):
     return {"status_code": 200, "message": "post created"}
 
 
-@app.post("/create/user", response_model=UserModel, response_class=HTMLResponse)
+@app.post("/create/user")
 async def create_user(req: UserModel, db: Database = Depends(get_db)):
 
     await db.execute("INSERT INTO `User`(username, password_hash) VALUES (:username, :password_hash)",
                      {'username': req.username, 'password_hash': sha256(req.password.encode()).hexdigest()})
 
-    return {"status_code": 200, "message": "post created"}
+    return {"status_code": 200, "message": "user created"}
