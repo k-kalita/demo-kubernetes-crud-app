@@ -19,6 +19,7 @@ function handleAjaxSubmit(form) {
         type: 'POST',
         url: form.attr('action'),
         data: form.serialize(),
+        contentType: "application/x-www-form-urlencoded",
         success: function (data) {
             form[0].reset();
 

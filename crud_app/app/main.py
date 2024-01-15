@@ -44,6 +44,9 @@ class PostDeleteModel(BaseModel):
 class UserModel(BaseModel):
     username: str
     password: str
+    first_name: str
+    last_name: str
+    email: str
 
 
 @app.get("/")
@@ -62,13 +65,14 @@ async def view(username: int):
 
 
 @app.post("/create/post")
-async def create_post(req: PostModel, db: Database = Depends(get_db)):
-    if not await validate(db, req.username, req.password):
+async def create_post(req: Request, db: Database = Depends(get_db)):
+    data = await req.form()
+    if not await validate(db, data.get('username'), data.get('password')):
         return HTTPException(status_code=403, detail="wrong password")
 
     author_id = await db.fetch_one(
         "SELECT id FROM `User` WHERE username = :username",
-        {"username": req.username})
+        {"username": data.get('username')})
 
     if author_id is None:
         return HTTPException(status_code=400, detail="User does not exist")
@@ -77,7 +81,7 @@ async def create_post(req: PostModel, db: Database = Depends(get_db)):
 
     await db.execute(
         "INSERT INTO `Post`(title, content, author_id) VALUES (:title, :content, :author_id)",
-        {'title': req.title, 'content': req.content, 'author_id': author_id}
+        {'title': data.get('title'), 'content': data.get('content'), 'author_id': author_id}
     )
 
     return JSONResponse({"status_code": 200, "status": "success", "message": "Post created"})
@@ -105,24 +109,37 @@ async def delete_post(req: PostDeleteModel, db: Database = Depends(get_db)):
     return {"status_code": 200, "message": "post deleted"}
 
 
+@app.get("/create/user")
+def create_user(request: Request):
+    return templates.TemplateResponse("create_user.html", {"request": request})
+
+
 @app.post("/create/user")
-async def create_user(req: UserModel, db: Database = Depends(get_db)):
+async def create_user(req: Request, db: Database = Depends(get_db)):
+    data = await req.form()
+
+    username = data.get('username')
+    password = data.get('password')
+    first_name = data.get('first_name')
+    last_name = data.get('last_name')
+    email = data.get('email')
 
     out = await db.fetch_all("SELECT id FROM `User` WHERE username = :username",
-                             {'username': req.username})
+                             {'username': username})
 
     if len(out) > 0:
         return HTTPException(status_code=400, detail="User already exists")
 
-    await db.execute("INSERT INTO `User`(username, password_hash) VALUES (:username, :password_hash)",
-                     {'username': req.username, 'password_hash': sha256(req.password.encode()).hexdigest()})
+    await db.execute("INSERT INTO `User`(username, password_hash, name, last_name, email) "
+                     "VALUES (:username, :password_hash, :first_name, :last_name, :email)",
+                     {'username': username, 'password_hash': sha256(password.encode()).hexdigest(),
+                      'first_name': first_name, 'last_name': last_name, 'email': email})
 
     return JSONResponse({"status_code": 200, "status": "success", "message": "User created"})
 
 
 @app.post("/delete/user")
 async def delete_user(req: UserModel, db: Database = Depends(get_db)):
-
     out = await db.fetch_all("SELECT id FROM `User` WHERE username = :username",
                              {'username': req.username})
 

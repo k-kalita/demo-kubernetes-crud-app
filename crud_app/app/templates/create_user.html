@@ -11,12 +11,13 @@
                 <h4 class="text-center mb-0">Register new user</h4>
             </div>
             <div class="card-body">
-                <form data-show-response-modal="true">
+                <form method="POST" action="/create/user" data-show-response-modal="true" enctype="application/x-www-form-urlencoded">
                     <div class="mb-3">
                         <label for="username" class="form-label">Username</label>
                         <input type="text"
                                class="form-control"
                                id="username"
+                               name="username"
                                placeholder="your username">
                     </div>
                     <div class="mb-3">
@@ -37,18 +38,18 @@
                     </div>
                     <div class="row mb-2">
                         <div class="col-6">
-                            <label for="first-name" class="form-label">First Name</label>
+                            <label for="first_name" class="form-label">First Name</label>
                             <input type="text"
                                    class="form-control"
-                                   id="first-name"
+                                   id="first_name"
                                    name="first_name"
                                    placeholder="Raphael">
                         </div>
                         <div class="col-6">
-                            <label for="last-name" class="form-label">Last Name</label>
+                            <label for="last_name" class="form-label">Last Name</label>
                             <input type="text"
                                    class="form-control"
-                                   id="last-name"
+                                   id="last_name"
                                    name="last_name"
                                    placeholder="Coffe">
                         </div>
