@@ -1,5 +1,7 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, Request
 from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from starlette.staticfiles import StaticFiles
 from databases import Database
 from pydantic import BaseModel
 from hashlib import sha256
@@ -7,6 +9,12 @@ from hashlib import sha256
 from .db_connect import (get_db)
 
 app = FastAPI()
+
+# Templates configuration
+templates = Jinja2Templates(directory="app/templates")
+
+# Static files configuration
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 
 async def validate(db: Database, username: str, password: str) -> bool:
@@ -24,8 +32,8 @@ class PostModel(BaseModel):
 
 
 @app.get("/")
-async def home():
-    ...
+async def home(request: Request):
+    return templates.TemplateResponse("create_post.html", {"request": request})
 
 
 @app.get("/view/{username}")
