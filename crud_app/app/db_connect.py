@@ -1,10 +1,14 @@
+import os
 from sqlalchemy import create_engine, MetaData
 from databases import Database
 
-DB_HOST = "127.0.0.1"
-DB_USER = "db_user"
-DB_PASSWORD = "db_password"
-DB_NAME = "PostDB"
+DB_HOST = os.getenv("POSTAPP_DB_HOST")
+DB_USER = os.getenv("POSTAPP_DB_USER")
+DB_PASSWORD = os.getenv("POSTAPP_DB_PASSWORD")
+DB_NAME = os.getenv("POSTAPP_DB_NAME")
+
+if not all([DB_HOST, DB_USER, DB_PASSWORD, DB_NAME]):
+    raise Exception("Please set the environment variables for the database")
 
 DATABASE_URL = f"mysql+mysqlconnector://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
 

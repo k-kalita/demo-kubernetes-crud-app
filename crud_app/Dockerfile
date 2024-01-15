@@ -1,4 +1,10 @@
 FROM python:3.9
+
+ENV POSTAPP_DB_HOST="127.0.0.1"
+ENV POSTAPP_DB_USER=db_user
+ENV POSTAPP_DB_PASSWORD=db_password
+ENV POSTAPP_DB_NAME=PostDB
+
 WORKDIR /app_code
 COPY ./requirements.txt /app_code/requirements.txt
 RUN pip install --no-cache-dir --upgrade -r /app_code/requirements.txt
