@@ -9,5 +9,7 @@ spec:
     app: crudapp
   ports:
     - protocol: TCP
-      port: 8000
-  type: LoadBalancer  # TODO: Use NodePort if you're using Minikube
+      port: 80
+      targetPort: 8000
+      nodePort: 30080
+  type: NodePort

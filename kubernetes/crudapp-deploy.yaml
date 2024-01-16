@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: crudapp-container
-        image: your-fastapi-image  # TODO
+        image: mateusz1982/kubernetes_demo:crudapp_image
         imagePullPolicy: Always
         env:
         - name: POSTAPP_DB_HOST

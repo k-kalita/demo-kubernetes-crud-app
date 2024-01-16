@@ -1,4 +1,4 @@
-FROM python:3.9
+FROM python:3.11
 
 #ENV POSTAPP_DB_HOST="127.0.0.1"
 #ENV POSTAPP_DB_USER=db_user

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: db-container
-        image: your-database-image  # TODO
+        image: mateusz1982/kubernetes_demo:db_image
         imagePullPolicy: Always
         env:
           - name: MYSQL_ROOT_PASSWORD
