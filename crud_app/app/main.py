@@ -20,12 +20,15 @@ templates = Jinja2Templates(directory=APP_ROOT_PATH / "templates")
 app.mount("/static", StaticFiles(directory=APP_ROOT_PATH / "static"), name="static")
 
 
-async def validate(db: Database, username: str, password: str) -> bool:
-    expected_hash, = await db.fetch_one(
+async def validate(db: Database, username: str, password: str) -> None:
+    expected_hash = await db.fetch_one(
         "SELECT password_hash FROM `User` WHERE username = :username",
         {"username": username}
     )
-    return sha256(password.encode()).hexdigest() == expected_hash
+    if expected_hash is None:
+        raise HTTPException(status_code=400, detail="User does not exist")
+    if sha256(password.encode()).hexdigest() != expected_hash:
+        raise HTTPException(status_code=403, detail="wrong password")
 
 
 class PostModel(BaseModel):
@@ -56,6 +59,7 @@ async def home(request: Request):
 
 @app.post("/test")
 async def test(request: Request):
+    data = await request.form()
     return JSONResponse({"status": "success", "message": "Hello World"})
 
 
@@ -67,16 +71,17 @@ async def view(username: int):
 @app.post("/create/post")
 async def create_post(req: Request, db: Database = Depends(get_db)):
     data = await req.form()
-    if not await validate(db, data.get('username'), data.get('password')):
-        return HTTPException(status_code=403, detail="wrong password")
+    try:
+        await validate(db, data.get('username'), data.get('password'))
+    except HTTPException as e:
+        return JSONResponse({"status_code": e.status_code,
+                             "status": "failure",
+                             "message": e.detail})
 
     author_id = await db.fetch_one(
         "SELECT id FROM `User` WHERE username = :username",
-        {"username": data.get('username')})
-
-    if author_id is None:
-        return HTTPException(status_code=400, detail="User does not exist")
-
+        {"username": data.get('username')}
+    )
     author_id = author_id[0]
 
     await db.execute(
@@ -88,25 +93,27 @@ async def create_post(req: Request, db: Database = Depends(get_db)):
 
 
 @app.post("/delete/post")
-async def delete_post(req: PostDeleteModel, db: Database = Depends(get_db)):
-    if not await validate(db, req.username, req.password):
-        return HTTPException(status_code=403, detail="wrong password")
+async def delete_post(req: Request, db: Database = Depends(get_db)):
+    data = await req.form()
+    try:
+        await validate(db, data.get('username'), data.get('password'))
+    except HTTPException as e:
+        return JSONResponse({"status_code": e.status_code,
+                             "status": "failure",
+                             "message": e.detail})
 
     author_id = await db.fetch_one(
         "SELECT id FROM `User` WHERE username = :username",
-        {"username": req.username})
-
-    if author_id is None:
-        return HTTPException(status_code=400, detail="User does not exist")
-
+        {"username": data.get('username')}
+    )
     author_id = author_id[0]
 
     await db.execute(
         "DELETE FROM `Post` WHERE id = :id_ AND author_id = :author_id",
-        {"id_": req.id_, "author_id": author_id}
+        {"id_": data.get('id_'), "author_id": author_id}
     )
 
-    return {"status_code": 200, "message": "post deleted"}
+    return JSONResponse({"status_code": 200, "status": "success", "message": "Post deleted"})
 
 
 @app.get("/create/user")
