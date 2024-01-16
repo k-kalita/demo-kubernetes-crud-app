@@ -9,7 +9,7 @@ DB_NAME = os.getenv("POSTAPP_DB_NAME")
 DB_PORT = os.getenv("POSTAPP_DB_PORT")
 
 if not DB_PORT:
-    DB_PORT = 3306
+    DB_PORT = '3306'
 
 if not all([DB_HOST, DB_USER, DB_PASSWORD, DB_NAME]):
     raise Exception("Please set the environment variables for the database")
