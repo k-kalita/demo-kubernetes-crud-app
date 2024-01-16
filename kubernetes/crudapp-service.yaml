@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: crudapp-service
+
+spec:
+  selector:
+    app: crudapp
+  ports:
+    - protocol: TCP
+      port: 8000
+  type: LoadBalancer  # TODO: Use NodePort if you're using Minikube

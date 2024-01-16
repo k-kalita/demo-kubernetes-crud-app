@@ -20,16 +20,3 @@ CREATE TABLE IF NOT EXISTS `Post` (
     PRIMARY KEY (`id`),
     FOREIGN KEY (`author_id`) REFERENCES `User` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
-
-
-CREATE VIEW user_posts AS
-    SELECT
-        u.id AS user_id,
-        u.username AS username,
-        u.name AS name,
-        u.email AS email,
-        p.id AS post_id,
-        p.title AS post_title,
-        p.content AS post_content
-    FROM User u
-    LEFT JOIN Post p ON u.id = p.author_id;
