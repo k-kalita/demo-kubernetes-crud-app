@@ -17,6 +17,7 @@ spec:
       containers:
       - name: db-container
         image: your-database-image  # TODO
+        imagePullPolicy: Always
         env:
           - name: MYSQL_ROOT_PASSWORD
             value: "root_password"

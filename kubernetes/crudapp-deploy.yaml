@@ -17,6 +17,7 @@ spec:
       containers:
       - name: crudapp-container
         image: your-fastapi-image  # TODO
+        imagePullPolicy: Always
         env:
         - name: POSTAPP_DB_HOST
           value: "127.0.0.1"
