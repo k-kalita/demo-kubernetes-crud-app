@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: crudapp-deployment
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: crudapp
+  template:
+    metadata:
+      labels:
+        app: crudapp
+    spec:
+      containers:
+      - name: crudapp-container
+        image: krzysztofkalita/kubernetes_demo_app:crudapp_image
+        imagePullPolicy: Always
+        env:
+        - name: POSTAPP_DB_HOST
+          value: "127.0.0.1"
+        - name: POSTAPP_DB_PORT
+          value: "3306"
+        - name: POSTAPP_DB_USER
+          value: "db_user"
+        - name: POSTAPP_DB_PASSWORD
+          value: "db_password"
+        - name: POSTAPP_DB_NAME
+          value: "PostDB"
+        ports:
+        - containerPort: 8000
