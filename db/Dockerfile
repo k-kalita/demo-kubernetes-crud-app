@@ -6,7 +6,7 @@ FROM mysql:latest
 #ENV MYSQL_USER=db_user
 #ENV MYSQL_PASSWORD=db_password
 
-COPY init.sql /docker-entrypoint-initdb.d/init.sql
+COPY ./init.sql /docker-entrypoint-initdb.d/init.sql
 
 # port
 EXPOSE 3306

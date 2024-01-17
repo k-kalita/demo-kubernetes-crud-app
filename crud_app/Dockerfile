@@ -1,10 +1,10 @@
 FROM python:3.11
 
-#ENV POSTAPP_DB_HOST="127.0.0.1"
-#ENV POSTAPP_DB_USER=db_user
-#ENV POSTAPP_DB_PASSWORD=db_password
-#ENV POSTAPP_DB_NAME=PostDB
-#ENV POSTAPP_DB_PORT=3306
+#ENV MYSQL_HOST="127.0.0.1"
+#ENV MYSQL_USER=db_user
+#ENV MYSQL_PASSWORD=db_password
+#ENV MYSQL_DB=PostDB
+#ENV MYSQL_PORT=3306
 
 WORKDIR /app_code
 COPY ./requirements.txt /app_code/requirements.txt

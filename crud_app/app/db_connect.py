@@ -1,39 +1,22 @@
 import os
-from sqlalchemy import create_engine, MetaData
-from databases import Database
+from mysql.connector.aio import connect
 
-DB_HOST = os.getenv("POSTAPP_DB_HOST")
-DB_USER = os.getenv("POSTAPP_DB_USER")
-DB_PASSWORD = os.getenv("POSTAPP_DB_PASSWORD")
-DB_NAME = os.getenv("POSTAPP_DB_NAME")
-DB_PORT = os.getenv("POSTAPP_DB_PORT")
+DB_HOST = os.getenv("MYSQL_HOST")
+DB_USER = os.getenv("MYSQL_USER")
+DB_PASSWORD = os.getenv("MYSQL_PASSWORD")
+DB_NAME = os.getenv("MYSQL_DB")
+DB_PORT = os.getenv("MYSQL_PORT")
 
-if not DB_PORT:
-    DB_PORT = '3306'
+# if not DB_PORT:
+#     DB_PORT = '3306'
 
-if not all([DB_HOST, DB_USER, DB_PASSWORD, DB_NAME]):
+if not all([DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, DB_PORT]):
     raise Exception("Please set the environment variables for the database")
 
-DATABASE_URL = f"mysql+mysqlconnector://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
-
-
-engine = create_engine(DATABASE_URL)
-metadata = MetaData()
-database = Database(DATABASE_URL)
-
-
-async def db_init():
-    await database.connect()
-    return database
-
-
-async def db_destroy(db):
-    await db.disconnect()
+DATABASE_URL = f"mysql+mysqlconnector://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+print(DATABASE_URL)
 
 
 async def get_db():
-    db = await db_init()
-    try:
-        yield db
-    finally:
-        await db_destroy(db)
+    db = await connect(host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME)
+    return db
