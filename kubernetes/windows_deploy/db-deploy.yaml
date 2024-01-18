@@ -3,12 +3,15 @@ kind: Deployment
 
 metadata:
   name: database-deployment
+  labels:
+    app: database
 
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: database
+
   template:
     metadata:
       labels:
@@ -18,14 +21,26 @@ spec:
       - name: db-container
         image: krzysztofkalita/kubernetes_demo_app:db_image
         imagePullPolicy: Always
-        env:
-          - name: MYSQL_ROOT_PASSWORD
-            value: "root_password"
-          - name: MYSQL_DATABASE
-            value: "PostDB"
-          - name: MYSQL_USER
-            value: "db_user"
-          - name: MYSQL_PASSWORD
-            value: "db_password"
         ports:
         - containerPort: 3306
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: MYSQL_ROOT_PASSWORD
+                name: db-secret
+          - name: MYSQL_USER
+            valueFrom:
+              secretKeyRef:
+                key: MYSQL_USER
+                name: db-secret
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: MYSQL_PASSWORD
+                name: db-secret
+          - name: MYSQL_DATABASE
+            valueFrom:
+              configMapKeyRef:
+                key: MYSQL_DB
+                name: db-configmap

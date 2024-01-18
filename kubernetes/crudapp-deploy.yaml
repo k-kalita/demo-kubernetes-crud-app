@@ -3,12 +3,15 @@ kind: Deployment
 
 metadata:
   name: crudapp-deployment
+  labels:
+    app: crudapp
 
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: crudapp
+
   template:
     metadata:
       labels:
@@ -17,9 +20,32 @@ spec:
       containers:
       - name: crudapp-container
         image: mateusz1982/kubernetes_demo:crudapp_image
-        envFrom:
-          - configMapRef:
-              name: db-configmap
         imagePullPolicy: Always
         ports:
         - containerPort: 8000
+        env:
+          - name: MYSQL_USER
+            valueFrom:
+              secretKeyRef:
+                key: MYSQL_USER
+                name: db-secret
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: MYSQL_PASSWORD
+                name: db-secret
+          - name: MYSQL_HOST
+            valueFrom:
+              configMapKeyRef:
+                key: MYSQL_HOST
+                name: db-configmap
+          - name: MYSQL_PORT
+            valueFrom:
+              configMapKeyRef:
+                key: MYSQL_PORT
+                name: db-configmap
+          - name: MYSQL_DB
+            valueFrom:
+              configMapKeyRef:
+                key: MYSQL_DB
+                name: db-configmap
