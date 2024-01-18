@@ -21,12 +21,12 @@ function handleAjaxSubmit(form) {
         data: form.serialize(),
         contentType: "application/x-www-form-urlencoded",
         success: function (data) {
-            form[0].reset();
-
             form.trigger('submit-complete', [data])
 
-            if (data.status === 'success')
+            if (data.status === 'success') {
                 form.trigger('submit-success', [data]);
+                form[0].reset();
+            }
             else
                 form.trigger('submit-failure', [data]);
         },
