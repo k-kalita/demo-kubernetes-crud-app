@@ -26,12 +26,17 @@ app.mount("/static", StaticFiles(directory=APP_ROOT_PATH / "static"), name="stat
 
 async def validate(db: MySQLConnection, username: str, password: str) -> None:
     cur = await db.cursor()
-    await cur.execute(
-        "SELECT password_hash FROM `User` WHERE username = %s",
-        (username,)
-    )
-    expected_hash = (await cur.fetchone())[0]
-    await cur.close()
+
+    try:
+        await cur.execute(
+            "SELECT password_hash FROM `User` WHERE username = %s",
+            (username,)
+        )
+        expected_hash = (await cur.fetchone())[0]
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        await cur.close()
 
     if expected_hash is None:
         raise HTTPException(status_code=400, detail="User does not exist")
@@ -53,10 +58,18 @@ async def validation_response(db, username: str, password: str) -> JSONResponse 
 
 async def get_user_id(db, username: str) -> int:
     cur = await db.cursor()
-    await cur.execute("SELECT id FROM `User` WHERE username = %s",
-                      (username,))
-    user_id = (await cur.fetchone())[0]
-    await cur.close()
+    try:
+        await cur.execute("SELECT id FROM `User` WHERE username = %s",
+                          (username,))
+        if await cur.fetchone() is None:
+            raise IndexError
+        user_id = (await cur.fetchone())[0]
+    except (SQLAlchemyError, IndexError) as e:
+        return JSONResponse({"status_code": 500, "status": "failure", "message": str(e)})
+    finally:
+        await cur.close()
+        await db.close()
+
     if user_id is None:
         raise HTTPException(status_code=400, detail="User does not exist")
     return user_id[0]
@@ -80,6 +93,7 @@ async def create_post(req: Request):
     data = await req.form()
     response = await validation_response(db, data.get('username'), data.get('password'))
     if response is not None:
+        db.close()
         return response
     author_id = await get_user_id(db, data.get('username'))
 
@@ -93,7 +107,9 @@ async def create_post(req: Request):
         await db.commit()
     except SQLAlchemyError as e:  # TODO: check if this is the right exception
         return JSONResponse({"status_code": 500, "status": "failure", "message": str(e)})
-    await cur.close()
+    finally:
+        await cur.close()
+        await db.close()
 
     return JSONResponse({"status_code": 200, "status": "success", "message": "Post created"})
 
@@ -104,6 +120,7 @@ async def delete_post(req: Request):
     data = await req.form()
     response = await validation_response(db, data.get('username'), data.get('password'))
     if response is not None:
+        db.close()
         return response
     author_id = await get_user_id(db, data.get('username'))
 
@@ -111,9 +128,12 @@ async def delete_post(req: Request):
     try:
         await cur.execute("DELETE FROM `Post` WHERE id = %s AND author_id = %s",
                           (data.get('id'), author_id))
+        db.commit()
     except SQLAlchemyError as e:  # TODO: check if this is the right exception
         return JSONResponse({"status_code": 500, "status": "failure", "message": str(e)})
-    await cur.close()
+    finally:
+        await cur.close()
+        await db.close()
 
     return JSONResponse({"status_code": 200, "status": "success", "message": "Post deleted"})
 
@@ -154,6 +174,7 @@ async def create_user(req: Request):
         return JSONResponse({"status_code": 500, "status": "failure", "message": str(e)})
     finally:
         await cur.close()
+        await db.close()
 
     return JSONResponse({"status_code": 200, "status": "success", "message": "User created"})
 
@@ -164,14 +185,18 @@ async def delete_user(req: Request):
     data = await req.form()
     response = await validation_response(db, data.get('username'), data.get('password'))
     if response is not None:
+        db.close()
         return response
 
     cur = await db.cursor()
     try:
         await cur.execute("DELETE FROM `User` WHERE username = %s",
                           (data.get('username'),))
+        db.commit()
     except SQLAlchemyError as e:
         return JSONResponse({"status_code": 500, "status": "failure", "message": str(e)})
-    await cur.close()
+    finally:
+        await cur.close()
+        await db.close()
 
     return JSONResponse({"status_code": 200, "status": "success", "message": "User deleted"})
