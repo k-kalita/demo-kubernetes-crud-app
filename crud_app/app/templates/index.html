@@ -25,6 +25,8 @@
     <!-- static -->
     <link rel="stylesheet" href="{{ url_for('static', path='base.css') }}">
     <script src="{{ url_for('static', path='base.js') }}"></script>
+    {% block head %}
+    {% endblock %}
 </head>
 <body>
     {% block content %}

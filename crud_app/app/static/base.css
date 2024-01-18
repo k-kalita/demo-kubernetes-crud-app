@@ -6,6 +6,10 @@ body {
     height: 100%;
 }
 
+tr[data-href] {
+	cursor: pointer;
+}
+
 #success-modal .modal-dialog, #failure-modal .modal-dialog {
     width: 20rem;
 }

@@ -39,7 +39,9 @@ async def validate(wrapper: DatabaseWrapper, username: str, password: str) -> No
         raise HTTPException(status_code=403, detail="wrong password")
 
 
-async def validation_response(wrapper: DatabaseWrapper, username: str, password: str) -> JSONResponse | None:
+async def validation_response(wrapper: DatabaseWrapper,
+                              username: str,
+                              password: str) -> JSONResponse | None:
     try:
         await validate(wrapper.cursor, username, password)
     except HTTPException as e:
@@ -59,7 +61,7 @@ async def get_user_id(wrapper: DatabaseWrapper, username: str) -> int:
             raise IndexError
         user_id = (await wrapper.cursor.fetchone())[0]
     except (SQLAlchemyError, IndexError) as e:
-        return JSONResponse({"status_code": 500, "status": "failure", "message": str(e)})
+        raise HTTPException(status_code=500, detail=str(e))
 
     if user_id is None:
         raise HTTPException(status_code=400, detail="User does not exist")
@@ -123,9 +125,21 @@ async def delete_post(req: Request):
 
 # ----------------------------------------- user crud ------------------------------------------ #
 
-@app.get("/view/{username}")
-async def view_user(username: int):
-    ...
+@app.get("/view/users")
+async def view_users(request: Request) -> templates.TemplateResponse:
+    async with DatabaseConnection() as wr:
+        await wr.cursor.execute("SELECT * FROM `User`")
+        users = await wr.cursor.fetchall()
+
+    users = [{"id": user[0], "username": user[1], "name": user[3], "last_name": user[4],
+              "email": user[5]} for user in users]
+
+    return templates.TemplateResponse("view_users.html", {"request": request, "users": users})
+
+
+@app.get("/view/user/{username}")
+async def view_user(request: Request, username: str):
+    return templates.TemplateResponse("view_user.html", {"request": request, "username": username})
 
 
 @app.get("/create/user")

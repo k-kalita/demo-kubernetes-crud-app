@@ -12,6 +12,10 @@ function setup() {
     }).on('submit-failure', function (e, data) {
         renderResponsePopup($('#failure-modal'), data);
     });
+
+    $('tr[data-href]').on("click", function () {
+        window.location.href = $(this).data('href');
+    });
 }
 
 function handleAjaxSubmit(form) {
