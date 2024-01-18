@@ -147,11 +147,13 @@ async def create_user(req: Request):
             "VALUES (%s, %s, %s, %s, %s)",
             (username, sha256(password.encode()).hexdigest(), first_name, last_name, email)
         )
+        await db.commit()
     except IntegrityError as e:
         return JSONResponse({"status_code": 400, "status": "failure", "message": str(e)})
     except SQLAlchemyError as e:
         return JSONResponse({"status_code": 500, "status": "failure", "message": str(e)})
-    await cur.close()
+    finally:
+        await cur.close()
 
     return JSONResponse({"status_code": 200, "status": "success", "message": "User created"})
 

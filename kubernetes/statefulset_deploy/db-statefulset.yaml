@@ -52,7 +52,7 @@ spec:
     - metadata:
         name: db-volume
       spec:
-        accessModes: [ "ReadWriteOnce" ]
+        accessModes: [ "ReadWriteMany" ]
         resources:
           requests:
             storage: 0.5Gi
