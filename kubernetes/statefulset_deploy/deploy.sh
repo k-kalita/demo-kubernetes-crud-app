@@ -1,8 +1,8 @@
-kubectl apply -f ../basic_deploy/db-configmap.yaml
-kubectl apply -f ../basic_deploy/db-secret.yaml
+kubectl apply -f ../db-configmap.yaml
+kubectl apply -f ../db-secret.yaml
 
-kubectl apply -f ./db-statefulset.yaml
-kubectl apply -f ../basic_deploy/db-service.yaml
+kubectl apply -f ../db-statefulset.yaml
+kubectl apply -f ../db-service.yaml
 
-kubectl apply -f ../basic_deploy/crudapp-deploy.yaml
-kubectl apply -f ../basic_deploy/crudapp-service.yaml
+kubectl apply -f ../crudapp-deploy.yaml
+kubectl apply -f ../crudapp-service.yaml
