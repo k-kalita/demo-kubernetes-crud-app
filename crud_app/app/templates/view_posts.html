@@ -1,0 +1,23 @@
+{% extends 'index.html' %}
+
+{% block title %}
+    Posts
+{% endblock %}
+
+{% block content %}
+    <div class="container pt-3 pb-3">
+        <div class="row w-100 justify-content-center">
+            <div class="col-8">
+                {% for data in posts %}
+                    {% with post=data.post, user=data.user %}
+                        {% include 'post.html' %}
+                    {% endwith %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    {% include 'post_util.html' %}
+    {% include 'success_modal.html' %}
+    {% include 'failure_modal.html' %}
+{% endblock %}

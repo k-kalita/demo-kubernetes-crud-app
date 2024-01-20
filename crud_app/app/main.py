@@ -76,8 +76,25 @@ def parse_post_record(post: tuple) -> Dict[str, str]:
 
 # ----------------------------------------- post views ----------------------------------------- #
 
+@app.get("/view/posts")
+async def view_posts(request: Request) -> HTMLResponse:
+    async with DatabaseConnection() as conn:
+        await conn.cursor.execute("SELECT * FROM `Post`")
+        query = await conn.cursor.fetchall()
+        query = [parse_post_record(post) for post in query]
+        posts = []
+        for record in query:
+            post = {"post": record}
+            await conn.cursor.execute("SELECT * FROM `User` WHERE id = %s", (record["author_id"],))
+            post["user"] = parse_user_record(await conn.cursor.fetchone())
+            posts.append(post)
+
+    return templates.TemplateResponse("view_posts.html", {"request": request, "posts": posts,
+                                                          "post": "", "user": ""})
+
+
 @app.get("/view/post/{id_}")
-async def view_post(request: Request, id_: int):
+async def view_post(request: Request, id_: int) -> HTMLResponse:
     async with DatabaseConnection() as conn:
         await conn.cursor.execute("SELECT * FROM `Post` WHERE id = %s", (id_,))
         post = parse_post_record(await conn.cursor.fetchone())
@@ -90,12 +107,12 @@ async def view_post(request: Request, id_: int):
 
 
 @app.get("/create/post")
-async def create_post(request: Request):
+async def create_post(request: Request) -> HTMLResponse:
     return templates.TemplateResponse("create_post.html", {"request": request})
 
 
 @app.post("/create/post")
-async def create_post(req: Request):
+async def create_post(req: Request) -> JSONResponse:
     data = await req.form()
 
     async with DatabaseConnection() as conn:
@@ -207,7 +224,7 @@ def create_user(request: Request) -> HTMLResponse:
 
 
 @app.post("/create/user")
-async def create_user(req: Request):
+async def create_user(req: Request) -> JSONResponse:
     data = await req.form()
     username = data.get('username')
     password = data.get('password')
@@ -230,7 +247,7 @@ async def create_user(req: Request):
 
 
 @app.post("/delete/user")
-async def delete_user(req: Request):
+async def delete_user(req: Request) -> JSONResponse:
     data = await req.form()
 
     async with DatabaseConnection() as conn:
