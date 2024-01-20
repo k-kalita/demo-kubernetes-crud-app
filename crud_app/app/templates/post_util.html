@@ -1,0 +1,60 @@
+<div class="modal fade" id="login-modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="login-form-title" class="modal-title"></h4>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="" id="login-form" data-show-response-modal="true">
+                    <div id="form-update-inputs">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Title</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="title"
+                                   name="title"
+                                   placeholder="title">
+                        </div>
+                        <div class="mb-3">
+                            <label for="content" class="form-label">Content</label>
+                            <textarea class="form-control"
+                                      id="content"
+                                      name="content"
+                                      rows="5"
+                                      placeholder="content"></textarea>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <label for="username" class="form-label">
+                                Username
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="username"
+                                   name="username"
+                                   placeholder="your username">
+                        </div>
+                        <div class="col-6">
+                            <label for="password" class="form-label">
+                                Password
+                            </label>
+                            <input type="password"
+                                   class="form-control"
+                                   id="password"
+                                   name="password"
+                                   placeholder="password">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3">
+                        Confirm
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

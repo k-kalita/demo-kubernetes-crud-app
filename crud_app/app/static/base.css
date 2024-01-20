@@ -10,6 +10,16 @@ tr[data-href] {
 	cursor: pointer;
 }
 
+.update-post:hover {
+	color: dodgerblue;
+	cursor: pointer;
+}
+
+.delete-post:hover {
+	color: red;
+	cursor: pointer;
+}
+
 #success-modal .modal-dialog, #failure-modal .modal-dialog {
     width: 20rem;
 }

@@ -1,16 +1,14 @@
 {% extends 'index.html' %}
 
 {% block title %}
-    {{ user.username }}
+    {{ post.title }}
 {% endblock %}
 
 {% block content %}
-    <div class="container pt-3 pb-3">
+    <div class="container d-flex align-items-center justify-content-center">
         <div class="row w-100 justify-content-center">
-            <div class="col-8">
-                {% for post in posts %}
-                    {% include 'post.html' %}
-                {% endfor %}
+            <div class="col-6">
+                {% include 'post.html' %}
             </div>
         </div>
     </div>

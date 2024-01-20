@@ -1,13 +1,16 @@
 function setup() {
-    $('form').filter(function () {
+    const ajaxForms = $('form').filter(function () {
         return $(this).attr("action") !== undefined;
-    }).on('submit', function (e) {
+    });
+
+    ajaxForms.on('submit', function (e) {
         e.preventDefault();
         handleAjaxSubmit($(this));
-    }).filter(function () {
+    });
+
+    ajaxForms.filter(function () {
         return $(this).data('show-response-modal');
     }).on('submit-success', function (e, data) {
-        console.log(data)
         renderResponsePopup($('#success-modal'), data);
     }).on('submit-failure', function (e, data) {
         renderResponsePopup($('#failure-modal'), data);
@@ -15,6 +18,42 @@ function setup() {
 
     $('tr[data-href]').on("click", function () {
         window.location.href = $(this).data('href');
+    });
+
+    $('.delete-post').on('click', function (e) {
+        $('#login-form').attr('action', $(this).data('url'));
+        $('#login-form-title').text('Confirm credentials to delete post');
+        $('#form-update-inputs').hide();
+        $('#login-modal').modal('show');
+    });
+
+    $('.update-post').on('click', function (e) {
+        $('#login-form').attr('action', $(this).data('url'));
+        $('#login-form-title').text('Update Post');
+
+        const formUpdateInputs = $('#form-update-inputs');
+        const post = $(this).closest('.post');
+        const postTitle = post.find('.post-title').text().trim();
+        const postContent = post.find('.post-content').text().trim();
+
+        formUpdateInputs.show();
+        formUpdateInputs.find('#title').val(postTitle);
+        formUpdateInputs.find('#content').val(postContent);
+
+        $('#login-modal').modal('show');
+    });
+
+    $('#login-form').on('submit-success', function (e, data) {
+        const post = $(`[data-post-id="${data.post_id}"]`);
+
+        if (data.action === 'delete')
+            post.remove();
+        if (data.action === 'update') {
+            post.find('.post-title').text(data.title);
+            post.find('.post-content').text(data.content);
+        }
+
+        $('#login-modal').modal('hide');
     });
 }
 
