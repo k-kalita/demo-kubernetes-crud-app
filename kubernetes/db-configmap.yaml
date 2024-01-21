@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: db-configmap
-data:
-  MYSQL_HOST: "db-service"
-  MYSQL_PORT: "3306"
-  MYSQL_DB: "PostDB"
